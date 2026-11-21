@@ -1,0 +1,49 @@
+name: downloader
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # JDownloader 2, headless. Its API is only reachable inside this compose network.
+  engine:
+    build:
+      context: apps/engine
+    restart: unless-stopped
+    environment:
+      USER_ID: ${USER_ID:-1000}
+      GROUP_ID: ${GROUP_ID:-1000}
+      TZ: ${TZ:-America/Havana}
+      JDOWNLOADER_MAX_MEM: ${JD_MAX_MEM:-768M}
+    volumes:
+      # The folder on the external drive where the downloads are saved. With the drive unmounted the engine fails
+      # to start instead of filling the system disk.
+      - type: bind
+        source: ${DOWNLOADS_PATH:?Set DOWNLOADS_PATH to the folder on the drive for the downloads}
+        target: /output
+        bind:
+          create_host_path: false
+      # JDownloader's settings, accounts, lists and its own updates, also on the drive
+      - type: bind
+        source: ${JD_CONFIG_PATH:?Set JD_CONFIG_PATH to the folder on the drive for JDownloader's settings}
+        target: /config
+        bind:
+          create_host_path: false
+    logging: *logging
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    # Started before the engine is healthy, so the web can say JDownloader is still starting
+    depends_on:
+      - engine
+    environment:
+      JD_API_URL: http://engine:3128
+      TZ: ${TZ:-America/Havana}
+    ports:
+      - "${WEB_PORT:-3008}:3000"
+    logging: *logging

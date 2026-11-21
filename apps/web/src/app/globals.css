@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f3f5fb;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --surface: rgb(255 255 255 / 0.72);
+  --surface-hover: rgb(255 255 255 / 0.9);
+  --surface-strong: #ffffff;
+  --surface-border: rgb(15 23 42 / 0.08);
+  --surface-highlight: rgb(255 255 255 / 0.9);
+  --surface-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 12px 32px -12px rgb(15 23 42 / 0.12);
+  --track: rgb(15 23 42 / 0.07);
+  --row-hover: rgb(15 23 42 / 0.035);
+  --row-selected: rgb(14 165 233 / 0.12);
+  --accent: 14 165 233;
+  --aurora-opacity: 0.45;
+}
+
+.dark {
+  --background: #060912;
+  --foreground: #e8ecf5;
+  --muted: #8b95ab;
+  --surface: rgb(255 255 255 / 0.035);
+  --surface-hover: rgb(255 255 255 / 0.06);
+  --surface-strong: #0e1320;
+  --surface-border: rgb(255 255 255 / 0.08);
+  --surface-highlight: rgb(255 255 255 / 0.07);
+  --surface-shadow: 0 1px 0 rgb(0 0 0 / 0.4), 0 24px 48px -24px rgb(0 0 0 / 0.7);
+  --track: rgb(255 255 255 / 0.07);
+  --row-hover: rgb(255 255 255 / 0.035);
+  --row-selected: rgb(14 165 233 / 0.16);
+  --aurora-opacity: 0.3;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-border: var(--surface-border);
+  --color-track: var(--track);
+  --color-accent: rgb(var(--accent));
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow:
+    inset 0 1px 0 var(--surface-highlight),
+    var(--surface-shadow);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+/* Menus and dialogs sit above the page, so they are opaque */
+.popover {
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 24px 64px -16px rgb(0 0 0 / 0.45);
+}
+
+.row-hover:hover {
+  background: var(--row-hover);
+}
+.row-selected,
+.row-selected:hover {
+  background: var(--row-selected);
+}
+
+.bg-accent-soft {
+  background: rgb(var(--accent) / 0.12);
+}
+.bg-accent-gradient {
+  background: linear-gradient(90deg, rgb(var(--accent) / 0.6), rgb(var(--accent)));
+}
+
+dialog::backdrop {
+  background: rgb(2 6 23 / 0.55);
+  backdrop-filter: blur(4px);
+}
+
+/* The background: slow blurred lights */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--aurora-opacity);
+}
+.aurora span {
+  position: absolute;
+  width: 60vmax;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  filter: blur(90px);
+}
+.aurora span:nth-child(1) {
+  top: -25vmax;
+  left: -15vmax;
+  background: radial-gradient(closest-side, rgb(14 165 233 / 0.7), transparent);
+  animation: drift-a 80s ease-in-out infinite alternate;
+}
+.aurora span:nth-child(2) {
+  bottom: -30vmax;
+  right: -20vmax;
+  background: radial-gradient(closest-side, rgb(139 92 246 / 0.55), transparent);
+  animation: drift-b 95s ease-in-out infinite alternate;
+}
+@keyframes drift-a {
+  to {
+    transform: translate(18vw, 14vh) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate(-16vw, -20vh) scale(0.9);
+  }
+}
+
+/* A light sweeping over bars that are moving */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.3), transparent);
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora span,
+  .shimmer::after {
+    animation: none;
+  }
+}
