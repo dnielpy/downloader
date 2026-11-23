@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Descargador: opciones</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #111827;
+        --muted: #6b7280;
+        --border: #d1d5db;
+        --accent: #0ea5e9;
+        --ok: #16a34a;
+        --error: #dc2626;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #111827;
+          --fg: #f3f4f6;
+          --muted: #9ca3af;
+          --border: #374151;
+          --ok: #4ade80;
+          --error: #f87171;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 16px;
+      }
+      label > span {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      small {
+        color: var(--muted);
+      }
+      input[type="url"],
+      textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+      }
+      textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+      .check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      button {
+        padding: 6px 14px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      #status.ok {
+        color: var(--ok);
+      }
+      #status.error {
+        color: var(--error);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Descargador</h1>
+      <form id="form">
+        <label>
+          <span>URL del descargador</span>
+          <input id="serverUrl" type="url" required placeholder="http://192.168.20.188:3008" />
+        </label>
+        <label class="check">
+          <input id="enabled" type="checkbox" />
+          Interceptar las descargas de Chrome
+        </label>
+        <label class="check">
+          <input id="autostart" type="checkbox" />
+          Empezar a descargar en cuanto se añaden (sin pasar por el linkgrabber)
+        </label>
+        <label>
+          <span>Hosts excluidos</span>
+          <textarea id="excludedHosts" placeholder="ejemplo.com"></textarea>
+          <small
+            >Uno por línea. Lo que se descarga de estos hosts (y sus subdominios) se queda en
+            Chrome.</small
+          >
+        </label>
+        <div class="row">
+          <button class="primary" type="submit">Guardar</button>
+          <button id="test" type="button">Probar conexión</button>
+          <span id="status" role="status"></span>
+        </div>
+      </form>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
